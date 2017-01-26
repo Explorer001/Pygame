@@ -21,6 +21,7 @@ Left = 100
 Right = 5
 Space = 1
 radius = 10
+throttleMode = 1
 
 def main():
 	while True:
@@ -52,17 +53,33 @@ def drawPointer(axes):
 	ymax = ((dy-Upper-Lower)/2)-radius
 	xaxis = axes[0]
 	yaxis = axes[1]
-	throttleLeft = axes[2]
-	throttleRight = axes[4]
+	throttleLeft = 0
+	throttleRight = 0
 	tilt = axes[3]
 	pygame.draw.circle(screen, red, (mx+int(xmax*xaxis),my+int(ymax*yaxis)), radius, 0)
 	timax = (dx-Left-Right)/2
-	thmaxL = (dy-Upper-Lower)/2
-	thmaxR = (dy-Upper-Lower)/2
-	colorL = red if throttleLeft > 0 else green
-	colorR = red if throttleRight > 0 else green
-	thrL = pygame.Rect((Space, my), ((Left/2)-2*Space, int(thmaxL*throttleLeft)+1))
-	thrR = pygame.Rect(((Left/2)+Space, my), ((Left/2)-3*Space, int(thmaxL*throttleRight)+1))
+	thmaxL = 0
+	thmaxR = 0
+	colorL = red
+	colorR = red
+	thrL = 0
+	thlR = 0
+	if throttleMode == 0:
+		throttleLeft = axes[2]
+        	throttleRight = axes[4]
+		colorL = red if throttleLeft > 0 else green
+        	colorR = red if throttleRight > 0 else green
+		thmaxL = (dy-Upper-Lower)/2
+                thmaxR = (dy-Upper-Lower)/2
+		thrL = pygame.Rect((Space, my), ((Left/2)-2*Space, int(thmaxL*throttleLeft)+1))
+		thrR = pygame.Rect(((Left/2)+Space, my), ((Left/2)-3*Space, int(thmaxL*throttleRight)+1))	
+	else:
+		throttleLeft = (-1*axes[2]+1)/2
+        	throttleRight = (-1*axes[4]+1)/2
+		thmaxL = (dy-Upper-Lower)
+	        thmaxR = (dy-Upper-Lower)
+		thrL = pygame.Rect((Space, dy-Lower), ((Left/2)-2*Space, -1*int(thmaxL*throttleLeft)+1))
+		thrR = pygame.Rect(((Left/2)+Space, dy-Lower), ((Left/2)-3*Space, -1*int(thmaxR*throttleRight)+1))
 	tilR = pygame.Rect((mx, dy-Lower+Space), (int(timax*tilt), dy-Space))
 	pygame.draw.rect(screen, colorL, thrL, 0)
 	pygame.draw.rect(screen, colorR, thrR, 0)
