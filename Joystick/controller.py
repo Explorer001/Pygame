@@ -38,7 +38,7 @@ def run():
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return
-		axes = getAxes(controller[-1])
+		axes = getAxes(controller[0])
 		drawGUI()
 		drawPointer(axes)
 		pygame.display.update()
@@ -75,9 +75,13 @@ def drawGUI():
 	throttle2 = pygame.Rect(((Left/2)+Space, Upper),((Left/2)-3*Space, dy-Upper-Lower))
 	tilt = pygame.Rect((Left, dy-Lower+Space),(dx-Right-Left, Lower-2*Space))
 	screen.fill(base03)
+	pygame.draw.rect(screen, base02, axisRect, 0)
 	pygame.draw.rect(screen, base00, axisRect, 1)
+	pygame.draw.rect(screen, base02, throttle1, 0)
 	pygame.draw.rect(screen, base00, throttle1, 1)
+	pygame.draw.rect(screen, base02, throttle2, 0)
 	pygame.draw.rect(screen, base00, throttle2, 1)
+	pygame.draw.rect(screen, base02, tilt, 0)
 	pygame.draw.rect(screen, base00, tilt, 1)
 	pygame.draw.line(screen, base00, (Space, ((dy-Upper-Lower)/2)+Upper), ((Left/2)-2*Space, ((dy-Upper-Lower)/2)+Upper), 1)
 	pygame.draw.line(screen, base00, ((Left/2)+2*Space, ((dy-Upper-Lower)/2)+Upper), (Left-Space-2, ((dy-Upper-Lower)/2)+Upper), 1)
