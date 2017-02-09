@@ -1,8 +1,9 @@
 import pygame
+import random
 import time
 
 pygame.init()
-windowSize = (800, 600)
+windowSize = (1000, 720)
 screen = pygame.display.set_mode(windowSize)
 pygame.display.set_caption('Life')
 clock = pygame.time.Clock()
@@ -12,8 +13,7 @@ cellSize = 10
 base03 = (0, 43, 54)
 base00 = (101, 123, 131)
 green = (133, 153, 0)
-
-boardSize = (10,10)
+red = (220, 50, 47)
 
 board = []
 dx = 0
@@ -83,27 +83,61 @@ def getLivingAdjacentCount(x, y):
 	return lifeCount
 
 def drawStructure(name, pos):
-	global board
+	global board, dx, dy
 	points = []
 	x,y = pos
 	if name == 'blinker':
-		points = [(x-1,y), (x,y),(x+1,y)]	
+		points = [(x-1,y), (x,y),(x+1,y)]
+	elif name == 'explosion':
+		points = [(x-1,y-1),(x-1,y-2),(x-1,y-3),(x,y-3),(x+1,y-3),(x+1,y-2),(x+1,y-1),(x-1,y+1),(x-1,y+2),(x-1,y+3),(x,y+3),(x+1,y+3),(x+1,y+2),(x+1,y+1)]	
+	elif name == 'pulsator':
+		points = [(x-4,y),(x-3,y),(x-2,y-1),(x-2,y+1),(x-1,y),(x,y),(x+1,y),(x+2,y),(x+3,y-1),(x+3,y+1),(x+4,y),(x+5,y)]
+	elif name == 'rPentomino':
+		points = [(x,y),(x,y-1),(x,y+1),(x-1,y),(x+1,y-1)]
+	elif name == 'random':
+		for fy in range(0,dy):
+			for fx in range(0,dx):
+				rtd = random.randint(1,10)
+				if rtd <= 6:
+					points.append((fx,fy))	
 	for p in points:
 		tx,ty = p
 		board[ty][tx] = 1
 
+def editorMode():
+	global board, cellSize
+	while True:
+		pygame.event.get()
+		btn = pygame.mouse.get_pressed()
+		a,b,c = btn
+		if a == 1:
+			x,y = pygame.mouse.get_pos()
+			cx = x/cellSize
+			cy = y/cellSize
+			board[cy][cx] = (board[cy][cx]+1)%2
+			time.sleep(0.5)
+		elif c == 1:
+			return
+		printBoard()
+		pygame.display.update()
+		clock.tick(15)
+
 def main():
 	global board
 	buildBoard()
-	drawStructure('blinker',(40,30))
+	printBoard()
+	editorMode()
 	while True:
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				quit()
+			if event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_e:
+					editorMode()
 		printBoard()
 		getNextGen()
 		pygame.display.update()
-		clock.tick(2)
+		clock.tick(15)
 
 main()
